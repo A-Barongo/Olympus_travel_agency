@@ -13,7 +13,7 @@ class Signup(Resource):
         try:
             user = User(
                 username=data['username'],
-                admin=data['admin']
+                admin=data.get('admin', False),
                 email=data['email']
             )
             user.password= data['password'] 
@@ -75,7 +75,7 @@ class Destinations(Resource):
     
 class DestinationByID(Resource):
     def get(self,id):
-        destination=Destination.query.filter(Destination.id==id).first()
+        destination=Destination.query.get(id)
         if destination:
             return make_response(jsonify(destination.to_dict()),200)
         else:
@@ -83,19 +83,21 @@ class DestinationByID(Resource):
     
     def patch(self,id):
         data = request.get_json()
-        destination=Destination.query.filter(Destination.id==id).first()
-        
+        destination=Destination.query.get(id)
+        if not destination:
+            return {'error': 'Destination not found'}, 404
         for attr in data:
             setattr(destination,attr,data[attr])
             
-        db.session.add(destination)
+        
         db.session.commit()      
         
         return make_response(destination.to_dict(),200)
     
     def delete(self,id):
-        destination=Destination.query.filter(Destination.id==id).first()
-        
+        destination=Destination.query.get(id)
+        if not destination:
+            return {'error': 'Destination not found'}, 404
         db.session.delete(destination)
         db.session.commit()
         
@@ -116,7 +118,7 @@ class Bookings(Resource):
             booking=Booking(
                 user_id=data['user_id'],
                 destination_id=data['destination_id'],
-                people_count=data['people_count']
+                people_count=data['people_count'],
                 confirmed=data['confirmed']
             )
             db.session.add(booking)
@@ -129,18 +131,20 @@ class Bookings(Resource):
         
     def patch(self,id):
         data=request.get_json()
-        booking=Booking.query.filter(Booking.id==id)
-        
+        booking=Booking.query.get(id)
+        if not booking:
+            return {'error': 'Booking not found'}, 404
         for attr in data:
             setattr(booking,attr,data[attr])
-        db.session.add(booking)
+        
         db.session.commit()      
         
         return make_response(booking.to_dict(),200)
     
     def delete(self,id):
-        booking=Booking.query.filter(Destination.id==id).first()
-        
+        booking=Booking.query.get(id)
+        if not booking:
+            return {'error': 'Booking not found'}, 404
         db.session.delete(booking)
         db.session.commit()   
         
@@ -153,8 +157,8 @@ class Messages(Resource):
         
         try:
             message=Message(
-                name=data['name'] 
-                email=data['email'] 
+                name=data['name'], 
+                email=data['email'],
                 message=data['message'] 
             )
             
@@ -176,9 +180,9 @@ api.add_resource(Signup, "/signup")
 api.add_resource(Login, "/login")
 api.add_resource(Destinations, "/destinations")
 api.add_resource(DestinationByID, "/destinations/<int:id>")
-api.add_resource(Bookings, "/Bookings/<int:id>")
+api.add_resource(Bookings, "/bookings", "/bookings/<int:id>")
 api.add_resource(Messages, "/messages")
-api.add_resource(Logout, "/logouts")
+api.add_resource(Logout, "/logout")
 
 
 if __name__ == '__main__':

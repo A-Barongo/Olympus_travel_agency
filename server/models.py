@@ -5,15 +5,13 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 from sqlalchemy.types import JSON
 from sqlalchemy.ext.hybrid import hybrid_property
-from config import  bcrypt
+from config import  bcrypt,db
 
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
 
-db = SQLAlchemy(metadata=metadata)
 
-class Destination(db.model,SerializerMixin):
+
+
+class Destination(db.Model,SerializerMixin):
     __tablename__='destinations'
     
     id=db.Column(db.Integer, primary_key=True)
@@ -25,12 +23,12 @@ class Destination(db.model,SerializerMixin):
     activities=db.Column(JSON, default=[])
     message=db.Column(db.String)
     
-    bookings=db.relationship('Booking', back_populate='destination',cascade='all, delete-orphan')
+    bookings=db.relationship('Booking', back_populates='destination',cascade='all, delete-orphan')
     users=association_proxy('bookings','user',creator=lambda user_obj:Booking(user=user_obj))
-    serialize_rules = ('-bookings.destination')
+    serialize_rules = ('-bookings.destination',)
     
     
-class Booking(db.model,SerializerMixin):
+class Booking(db.Model,SerializerMixin):
     __tablename__= 'bookings'
     
     id=db.Column(db.Integer, primary_key=True)
@@ -41,9 +39,9 @@ class Booking(db.model,SerializerMixin):
     
     user=db.relationship('User', back_populates='bookings')
     destination=db.relationship('Destination', back_populates='bookings')
-    serialize_rules = ('-user.bookings','-destination.bookings')
+    serialize_rules = ('-user.bookings','-destination.bookings',)
     
-class User(db.model,SerializerMixin):
+class User(db.Model,SerializerMixin):
     __tablename__='users'
     
     id=db.Column(db.Integer,primary_key=True)
@@ -54,11 +52,12 @@ class User(db.model,SerializerMixin):
     
     bookings=db.relationship('Booking', back_populates='user',cascade='all, delete-orphan')
     destinations=association_proxy('bookings','destination',creator=lambda destination_obj:Booking(destination=destination_obj))
+    serialize_rules = ('-bookings.user',)
     
     @validates('email')
     def validate_email(self, key, value):
-        if '@' and '.com'not in value:
-            raise ValueError("Rating must be between 1 and 5.")
+        if '@' not in value and '.com' not in value:
+            raise ValueError("Email must contain '@' and end with '.com'")
         return value
     
     @hybrid_property
@@ -67,19 +66,19 @@ class User(db.model,SerializerMixin):
 
     @password.setter
     def password(self, password):
-        password= bcrypt.generate_password_hash(
+        hashed= bcrypt.generate_password_hash(
             password.encode('utf-8'))
-        self._password = password.decode('utf-8')
+        self._password = hashed.decode('utf-8')
 
     def authenticate(self, password):
         return bcrypt.check_password_hash(
-            self._password_hash, password.encode('utf-8'))
+            self._password, password.encode('utf-8'))
     
-class Message(db.model,SerializerMixin):
+class Message(db.Model,SerializerMixin):
     __tablename__='messages'
     
-    id=db.Column(db.Integer,primary_ket=True)
-    name=db.Colum(db.String)
-    email=db.Colum(db.String)
-    message=db.Colum(db.String)
+    id=db.Column(db.Integer,primary_key=True)
+    name=db.Column(db.String)
+    email=db.Column(db.String)
+    message=db.Column(db.String)
     
