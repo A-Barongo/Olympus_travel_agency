@@ -107,7 +107,6 @@ class DestinationByID(Resource):
         for attr in data:
             setattr(destination,attr,data[attr])
             
-        
         db.session.commit()      
         
         return make_response(destination.to_dict(),200)
