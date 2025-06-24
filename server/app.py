@@ -15,6 +15,7 @@ class Signup(Resource):
                 username=data['username'],
                 admin=data.get('admin', False),
                 email=data['email']
+                
             )
             user.password= data['password'] 
 
@@ -54,6 +55,14 @@ class Destinations(Resource):
         return make_response(jsonify(destinations),200)
     def post(self):
         data=request.get_json()
+        user_id = session.get('user_id')
+        if not user_id:
+            return {"error": "Unauthorized access. Please log in."}, 401
+        
+        user = User.query.get(user_id)
+        if not user or not user.admin:
+            return {"error": "Forbidden: Admins only."}, 403
+
         try:
             destination=Destination(
                 name=data['name'],
@@ -83,6 +92,15 @@ class DestinationByID(Resource):
     
     def patch(self,id):
         data = request.get_json()
+        
+        user_id = session.get('user_id')
+        if not user_id:
+            return {"error": "Unauthorized access. Please log in."}, 401
+        
+        user = User.query.get(user_id)
+        if not user or not user.admin:
+            return {"error": "Forbidden: Admins only."}, 403
+
         destination=Destination.query.get(id)
         if not destination:
             return {'error': 'Destination not found'}, 404
@@ -96,32 +114,50 @@ class DestinationByID(Resource):
     
     def delete(self,id):
         destination=Destination.query.get(id)
+        user_id = session.get('user_id')
+        if not user_id:
+            return {"error": "Unauthorized access. Please log in."}, 401
+        
+        user = User.query.get(user_id)
+        if not user or not user.admin:
+            return {"error": "Forbidden: Admins only."}, 403
+        
         if not destination:
             return {'error': 'Destination not found'}, 404
         db.session.delete(destination)
         db.session.commit()
         
 class Bookings(Resource):
-    def get(self,id=None):
+    def get(self, id=None):
         if id:
             booking = Booking.query.get(id)
             if booking:
                 return booking.to_dict(), 200
             return {"error": "Booking not found"}, 404
         else:
-            # Handle query param for filtering by confirmed status
+            user_id = session.get('user_id')
+            if not user_id:
+                return {"error": "Unauthorized access. Please log in."}, 401
+
             confirmed_param = request.args.get("confirmed")
+
+            query = Booking.query.filter_by(user_id=user_id)
+
             if confirmed_param == "true":
-                bookings = Booking.query.filter_by(confirmed=True).all()
+                query = query.filter_by(confirmed=True)
             elif confirmed_param == "false":
-                bookings = Booking.query.filter_by(confirmed=False).all()
-            else:
-                bookings = Booking.query.all()
-            
-            return [b.to_dict() for b in bookings], 200
+                query = query.filter_by(confirmed=False)
+
+            bookings = query.all()
+            destinations = [b.destination.to_dict() for b in bookings]
+            return destinations, 200
+
         
     def post(self,id=None):
         data=request.get_json()
+        user_id = session.get('user_id')
+        if not user_id:
+            return {"error": "Unauthorized access. Please log in."}, 401
         try:
             booking=Booking(
                 user_id=data['user_id'],
@@ -139,6 +175,9 @@ class Bookings(Resource):
         
     def patch(self,id):
         data=request.get_json()
+        user_id = session.get('user_id')
+        if not user_id:
+            return {"error": "Unauthorized access. Please log in."}, 401
         booking=Booking.query.get(id)
         if not booking:
             return {'error': 'Booking not found'}, 404
@@ -151,6 +190,9 @@ class Bookings(Resource):
     
     def delete(self,id):
         booking=Booking.query.get(id)
+        user_id = session.get('user_id')
+        if not user_id:
+            return {"error": "Unauthorized access. Please log in."}, 401
         if not booking:
             return {'error': 'Booking not found'}, 404
         db.session.delete(booking)
