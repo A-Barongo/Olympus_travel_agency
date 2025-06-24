@@ -11,6 +11,9 @@ faker = "*"
 flask-restful = "*"
 flask-migrate = "*"
 flask-bcrypt = "*"
+flask-cors = "*"
+sqlalchemy = "*"
+"sqlalchemy.orm" = "*"
 
 [dev-packages]
 

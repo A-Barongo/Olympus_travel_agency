@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
           <Link to="/contact" className="hover:text-gray-300">Contact</Link>
           <Link to="/my-bookings" className="hover:text-gray-300">My Bookings</Link>
             <Link to="/admin/AdminDashboard" className="hover:text-gray-300">Admin</Link>
+            <Link to="/signup" >Sign Up</Link>
         </div>
       </div>
     </nav>
