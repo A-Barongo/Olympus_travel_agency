@@ -8,7 +8,9 @@ import Navbar from "../Components/NavBar";
   const [formValues, setFormValues] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:5001/bookings?confirmed=false")
+    fetch("http://localhost:5001/bookings?confirmed=false"),{
+      credentials : "include",
+    }
       .then((res) => {
         return res.json();
       })
@@ -22,8 +24,9 @@ import Navbar from "../Components/NavBar";
   }, []);
 
   const handleRemove = (id) => {
-    fetch(`http://localhost:3000/bookings/${id}`, {
+    fetch(`http://localhost:5001/bookings/${id}`, {
       method: "DELETE",
+      credentials: "include",
     })
       .then((res) => {
         return res.json();
@@ -52,6 +55,7 @@ import Navbar from "../Components/NavBar";
 
     fetch(`http://localhost:5001/bookings/${booking.id}`, {
       method: "PATCH",
+      credentials : "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         people_count: peopleCount,

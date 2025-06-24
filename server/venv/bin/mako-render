@@ -1,4 +1,4 @@
-#!/home/emmanuel-gitau/Moringa/code/Phase-4/Olympus_travel_agency/server/venv/bin/python3
+#!/home/emmanuel-gitau/Moringa/code/Phase-4/Olympus_travel_agency/server/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

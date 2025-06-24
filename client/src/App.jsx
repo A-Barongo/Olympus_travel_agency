@@ -17,6 +17,8 @@ import EditDestination from "./Admin/EditDestination";
 import ManageBookings from "./Admin/ManageBookings";
 import Messages from "./Admin/Messages";
 import SignupForm from "./Pages/SignupForm";
+import LoginForm from "./Pages/LoginForm";
+import PrivateRoute from "./Components/PrivateRoutes"
 
 function App(){
 const [isAdmin, setIsAdmin] = useState(false);
@@ -28,7 +30,7 @@ const [isAdmin, setIsAdmin] = useState(false);
         <Route path="/destinations" element={<Destinations />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/my-bookings" element={<Bookings />} />
+        <Route path="/my-bookings" element={<PrivateRoute> <Bookings /></PrivateRoute>} />
         <Route path="/adminLogin" element={<AdminLogin setIsAdmin={setIsAdmin} />} />
         <Route path="/admin" element={ <AdminRoute isAdmin={isAdmin}> <AdminNavbar/> </AdminRoute> } />
         <Route path="/admin/AdminDashboard" element={ <AdminRoute isAdmin={isAdmin}> <AdminDashboard/> </AdminRoute> } />
@@ -37,6 +39,8 @@ const [isAdmin, setIsAdmin] = useState(false);
         <Route path="/admin/EditDestination" element={ <AdminRoute isAdmin={isAdmin}> <EditDestination/> </AdminRoute> } />
         <Route path="/admin/messages" element={<AdminRoute isAdmin={isAdmin}> <Messages /> </AdminRoute>} />
         <Route path="/signup" element={<SignupForm />} />
+        <Route path="/login" element={<LoginForm />} />
+
 
       </Routes>
       <Footer />

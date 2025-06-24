@@ -48,6 +48,10 @@ class Login(Resource):
                 return user.to_dict(), 200
 
         return {'error': '401 Unauthorized'}, 401
+        
+    
+    
+
     
 class Destinations(Resource):
     def get(self):
@@ -159,7 +163,7 @@ class Bookings(Resource):
             return {"error": "Unauthorized access. Please log in."}, 401
         try:
             booking=Booking(
-                user_id=data['user_id'],
+                user_id=data['users_id'],
                 destination_id=data['destination_id'],
                 people_count=data['people_count'],
                 confirmed=data['confirmed']

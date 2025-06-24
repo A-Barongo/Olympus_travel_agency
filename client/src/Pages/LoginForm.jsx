@@ -3,13 +3,14 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 
-const SignupForm = () => {
+const LoginForm = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const response = await fetch('http://localhost:5001/signup', {
+      const response = await fetch('http://localhost:5001/login', {
         method: 'POST',
+        credentials: "include",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
@@ -17,24 +18,24 @@ const SignupForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Signup successful!');
-        resetForm();
-        navigate('/login'); // optional: redirect after signup
-
+        // Save user data to localStorage
+        localStorage.setItem('user', JSON.stringify(data.user));
+        alert('Login successful!');
+        navigate('/'); // Redirect to home or dashboard
       } else {
-        alert(data.error || 'Signup failed');
+        alert(data.error || 'Login failed');
       }
     } catch (error) {
-      console.error('Error during signup:', error);
+      console.error('Error during login:', error);
+      alert('An unexpected error occurred');
     }
 
     setSubmitting(false);
   };
 
   const validationSchema = Yup.object({
-    username: Yup.string().min(3, 'Too short!').required('Required'),
-    email: Yup.string().email('Invalid email').required('Required'),
-    password: Yup.string().min(6, 'Minimum 6 characters').required('Required'),
+    username: Yup.string().required('Required'),
+    password: Yup.string().required('Required'),
   });
 
   return (
@@ -47,9 +48,9 @@ const SignupForm = () => {
         >
           ← Back
         </button>
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <Formik
-          initialValues={{ username: '', email: '', password: '' }}
+          initialValues={{ username: '', password: '' }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
@@ -66,22 +67,6 @@ const SignupForm = () => {
                 />
                 <ErrorMessage
                   name="username"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-gray-700">
-                  Email:
-                </label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="w-full border border-gray-300 px-3 py-2 rounded"
-                />
-                <ErrorMessage
-                  name="email"
                   component="div"
                   className="text-red-500 text-sm"
                 />
@@ -108,17 +93,8 @@ const SignupForm = () => {
                 disabled={isSubmitting}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
               >
-                Sign Up
+                Login
               </button>
-              <p className="text-center text-sm mt-4">
-                Already have an account?{" "}
-                <span
-                onClick={() => navigate("/login")}
-                className="text-blue-600 hover:underline cursor-pointer"
-                >
-                  Log in
-                  </span>
-                  </p>
             </Form>
           )}
         </Formik>
@@ -127,4 +103,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default LoginForm;
