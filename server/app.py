@@ -109,7 +109,15 @@ class Bookings(Resource):
                 return booking.to_dict(), 200
             return {"error": "Booking not found"}, 404
         else:
-            bookings = Booking.query.all()
+            # Handle query param for filtering by confirmed status
+            confirmed_param = request.args.get("confirmed")
+            if confirmed_param == "true":
+                bookings = Booking.query.filter_by(confirmed=True).all()
+            elif confirmed_param == "false":
+                bookings = Booking.query.filter_by(confirmed=False).all()
+            else:
+                bookings = Booking.query.all()
+            
             return [b.to_dict() for b in bookings], 200
         
     def post(self,id=None):

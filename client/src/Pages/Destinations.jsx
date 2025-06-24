@@ -10,9 +10,10 @@ function Destinations() {
     const [filterPrice, setFilterPrice] = useState("");
 
     useEffect(() => {
-      fetch("http://localhost:3000/destinations")
+      fetch("http://localhost:5001/destinations")
         .then((res) => res.json())
         .then((data) => setPlaces(data))
+        .catch((err) => console.error("Error fetching destinations:", err));
     }, []);
   
     const handleBook = (place) => {
@@ -23,7 +24,7 @@ function Destinations() {
             image: place.image,
             description: place.description,
         };
-        fetch("http://localhost:3000/bookings", {
+        fetch("http://localhost:5001/bookings", {
           method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -68,11 +69,7 @@ function Destinations() {
           ))}
         </div>
         
-        <div className="flex flex-wrap gap-6 justify-center">
-          {places.map((place) => (
-            <PlaceCard key={place.id} place={place} onBook={handleBook} />
-          ))}
-        </div>
+       
       </div>
       /</div>
     );

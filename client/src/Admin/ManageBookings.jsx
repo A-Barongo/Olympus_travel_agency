@@ -7,7 +7,7 @@ function ManageBookings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/confirmed")
+    fetch("http://localhost:5001/bookings?confirmed=true")
       .then((res) => res.json())
       .then((data) => {
         setConfirmed(data);
@@ -16,7 +16,7 @@ function ManageBookings() {
   }, []);
 
   const handleRemove = (id) => {
-    fetch(`http://localhost:3000/confirmed/${id}`, {
+    fetch(`http://localhost:5001/bookings/${id}`, {
       method: "DELETE",
     })
       .then((res) => {

@@ -22,7 +22,7 @@ function Contact() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/messeges", {
+      const response = await fetch("http://localhost:5001/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

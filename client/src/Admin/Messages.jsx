@@ -7,7 +7,7 @@ function Messages() {
     const [messages, setMessages] = useState([]);
   
     useEffect(() => {
-      fetch("http://localhost:3000/messeges")
+      fetch("http://localhost:5001/messages")
         .then((res) => res.json())
         .then(setMessages)
         .catch((err) => {

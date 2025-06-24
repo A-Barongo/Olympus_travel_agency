@@ -16,7 +16,7 @@ function EditDestinationForm(){
     });
   
     useEffect(() => {
-      fetch("http://localhost:3000/destinations")
+      fetch("http://localhost:5001/destinations")
         .then((res) => res.json())
         .then(setDestinations)
         .catch((err) => console.error("Failed to fetch destinations:", err));
@@ -64,7 +64,7 @@ function EditDestinationForm(){
         activities: formData.activities.split(",").map((act) => act.trim()),
       };
   
-      fetch(`http://localhost:3000/destinations/${editingId}`, {
+      fetch(`http://localhost:5001/destinations/${editingId}`, {
         
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -90,7 +90,7 @@ function EditDestinationForm(){
     };
   
     const handleDelete = (id) => {
-      fetch(`http://localhost:3000/destinations/${id}`, {
+      fetch(`http://localhost:5001/destinations/${id}`, {
         method: "DELETE",
       })
         .then(() => {

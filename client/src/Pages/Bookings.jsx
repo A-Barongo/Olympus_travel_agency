@@ -8,7 +8,7 @@ import Navbar from "../Components/NavBar";
   const [formValues, setFormValues] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:3000/bookings")
+    fetch("http://localhost:5001/bookings?confirmed=false")
       .then((res) => {
         return res.json();
       })
@@ -46,42 +46,25 @@ import Navbar from "../Components/NavBar";
     }));
   }
 
-function handleConfirm(booking){
-    const form = formValues[booking.id]
-    if(!form || !form.name || !form.email || !form.phone || !form.people){
-        toast.error("Please fill in all fields.");
-        return;
-    }
+ const handleConfirm = (booking) => {
+    const form = formValues[booking.id];
+    const peopleCount = parseInt(form?.people || 1);
 
-    const peopleCount = parseInt(form.people);
-    const confirmedBooking = {
-        
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        people: peopleCount,
-        totalPrice: booking.price * peopleCount,
-        ...booking
-    }
-
-    fetch("http://localhost:3000/confirmed", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(confirmedBooking),
+    fetch(`http://localhost:5001/bookings/${booking.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        people_count: peopleCount,
+        confirmed: true,
+      }),
     })
-    .then((res) => {
-       
-        return res.json();
-    })
-    .then(() => {
+      .then((res) => res.json())
+      .then(() => {
         toast.success("Booking confirmed!");
-        setBookings((prevBookings) =>
-          prevBookings.filter((booking) => booking.id !== booking.id)
-        );
-    })
-}
+        setBookings((prev) => prev.filter((b) => b.id !== booking.id));
+      })
+      .catch(() => toast.error("Failed to confirm booking."));
+  };
 
 
   return (
