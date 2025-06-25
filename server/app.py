@@ -132,38 +132,40 @@ class DestinationByID(Resource):
         
 class Bookings(Resource):
     def get(self, id=None):
+        user_id = session.get('user_id')
+        if not user_id:
+                return {"error": "Unauthorized access. Please log in."}, 401
         if id:
             booking = Booking.query.get(id)
             if booking:
                 return booking.to_dict(), 200
             return {"error": "Booking not found"}, 404
         else:
-            user_id = session.get('user_id')
-            if not user_id:
-                return {"error": "Unauthorized access. Please log in."}, 401
-
+            
+            
             confirmed_param = request.args.get("confirmed")
 
-            query = Booking.query.filter_by(user_id=user_id)
+            bookings = Booking.query.all()
 
             if confirmed_param == "true":
-                query = query.filter_by(confirmed=True)
+                bookings = Booking.query.filter_by(confirmed=True)
             elif confirmed_param == "false":
-                query = query.filter_by(confirmed=False)
+                bookings = Booking.query.filter_by(confirmed=False)
 
-            bookings = query.all()
+            #bookings = query
             destinations = [b.destination.to_dict() for b in bookings]
             return destinations, 200
 
         
-    def post(self,id=None):
+    def post(self):
         data=request.get_json()
         user_id = session.get('user_id')
         if not user_id:
             return {"error": "Unauthorized access. Please log in."}, 401
+               
         try:
             booking=Booking(
-                user_id=data['users_id'],
+                user_id=data['user_id'],
                 destination_id=data['destination_id'],
                 people_count=data['people_count'],
                 confirmed=data['confirmed']
@@ -175,7 +177,7 @@ class Bookings(Resource):
         except IntegrityError:
 
             return {'error': '422 Unprocessable Entity'}, 422
-        
+            
     def patch(self,id):
         data=request.get_json()
         user_id = session.get('user_id')

@@ -16,16 +16,16 @@ function Destinations() {
         .catch((err) => console.error("Error fetching destinations:", err));
     }, []);
   
-    const handleBook = (place) => {
+    const handleBook = (booking,user,peopleCount,confirmed) => {
         const bookingData = {
-            name: place.name,
-            country: place.country,
-            price: place.price,
-            image: place.image,
-            description: place.description,
+          users_id: user?.user?.id,
+          destination_id: booking.destination_id,
+          people_count: peopleCount,
+          confirmed: false,
         };
         fetch("http://localhost:5001/bookings", {
           method: "POST",
+          credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },

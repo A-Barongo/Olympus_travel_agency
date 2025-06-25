@@ -8,9 +8,7 @@ import Navbar from "../Components/NavBar";
   const [formValues, setFormValues] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:5001/bookings?confirmed=false"),{
-      credentials : "include",
-    }
+    fetch("http://localhost:5001/bookings?confirmed=false")
       .then((res) => {
         return res.json();
       })

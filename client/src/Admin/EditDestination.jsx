@@ -57,7 +57,7 @@ function EditDestinationForm(){
     };
   
     const handleUpdate = (e) => {
-      e.preventDefault();
+      //e.preventDefault();
       const updatedData = {
         ...formData,
         price: Number(formData.price),
@@ -65,8 +65,8 @@ function EditDestinationForm(){
       };
   
       fetch(`http://localhost:5001/destinations/${editingId}`, {
-        
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData),
       })
@@ -92,6 +92,7 @@ function EditDestinationForm(){
     const handleDelete = (id) => {
       fetch(`http://localhost:5001/destinations/${id}`, {
         method: "DELETE",
+        credentials: "include",
       })
         .then(() => {
           setDestinations((prev) => prev.filter((dest) => dest.id !== id));

@@ -28,6 +28,7 @@ function AddDestination(){
     e.preventDefault();
     fetch("http://localhost:5001/destinations", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

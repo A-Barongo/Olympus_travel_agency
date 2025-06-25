@@ -22,7 +22,7 @@ const LoginForm = () => {
         // Save user data to localStorage
         localStorage.setItem('user', JSON.stringify(data.user));
         alert('Login successful!');
-        navigate('/'); // Redirect to home or dashboard
+        navigate('/my-bookings'); // Redirect to home or dashboard
       } else {
         alert(data.error || 'Login failed');
       }
