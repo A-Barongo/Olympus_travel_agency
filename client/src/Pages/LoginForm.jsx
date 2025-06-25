@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Components/NavBar';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -39,6 +40,8 @@ const LoginForm = () => {
   });
 
   return (
+    <div>
+        <Navbar />
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-md">
         <button
@@ -95,10 +98,20 @@ const LoginForm = () => {
               >
                 Login
               </button>
+              <p className="text-center text-sm mt-4">
+                Don't have an account?{" "}
+                <span
+                onClick={() => navigate("/signup")}
+                className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  Sign Up
+                  </span>
+                  </p>
             </Form>
           )}
         </Formik>
       </div>
+    </div>
     </div>
   );
 };
