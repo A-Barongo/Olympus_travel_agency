@@ -16,26 +16,37 @@ function Destinations() {
         .catch((err) => console.error("Error fetching destinations:", err));
     }, []);
   
-    const handleBook = (booking,user,peopleCount,confirmed) => {
-        const bookingData = {
-          users_id: user?.user?.id,
-          destination_id: booking.destination_id,
-          people_count: peopleCount,
-          confirmed: false,
-        };
-        fetch("http://localhost:5001/bookings", {
-          method: "POST",
-          credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(bookingData)
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            toast.success("Added to Bookings!");
-        })
-    };
+    const handleBook = (destination) => {
+  const peopleCount = 1; // or collect from a form
+  const bookingData = {
+    destination_id: destination.id,
+    people_count: peopleCount,
+    confirmed: false
+  };
+
+  fetch("http://localhost:5001/bookings", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(bookingData)
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Failed to book destination");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      toast.success("Destination booked successfully!");
+    })
+    .catch((err) => {
+      toast.error("Booking failed");
+      console.error(err);
+    });
+};
+
 
     const filteredPlaces = filterPrice
     ? places

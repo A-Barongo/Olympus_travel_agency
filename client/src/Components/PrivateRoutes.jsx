@@ -7,10 +7,10 @@ const PrivateRoute = ({ children }) => {
     const raw = localStorage.getItem("user");
     user = JSON.parse(raw);
   } catch {
-    localStorage.removeItem("user"); // remove broken value
+    localStorage.removeItem("user");
   }
 
-  if (!user || !user.user) {
+  if (!user) {
     return <Navigate to="/login" />;
   }
 
