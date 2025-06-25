@@ -19,6 +19,7 @@ import Messages from "./Admin/Messages";
 import SignupForm from "./Pages/SignupForm";
 import LoginForm from "./Pages/LoginForm";
 import PrivateRoute from "./Components/PrivateRoutes"
+import UserInfo from "./Components/UserInfo";
 
 function App(){
 const [isAdmin, setIsAdmin] = useState(false);
@@ -40,6 +41,7 @@ const [isAdmin, setIsAdmin] = useState(false);
         <Route path="/admin/messages" element={<AdminRoute isAdmin={isAdmin}> <Messages /> </AdminRoute>} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/logout" element = {<UserInfo />} />
 
 
       </Routes>

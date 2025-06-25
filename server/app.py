@@ -43,7 +43,7 @@ class Login(Resource):
 
         if user:
             if user.authenticate(password):
-
+                session['is_admin'] = user.is_admin
                 session['user_id'] = user.id
                 return user.to_dict(), 200
 
@@ -133,57 +133,86 @@ class DestinationByID(Resource):
 class Bookings(Resource):
     def get(self, id=None):
         user_id = session.get('user_id')
-        if not user_id:
-                return {"error": "Unauthorized access. Please log in."}, 401
+        is_admin = session.get('is_admin')  # ← Add this logic
+
+        if not user_id and not is_admin:
+            return {"error": "Unauthorized access. Please log in."}, 401
+
         if id:
             booking = Booking.query.get(id)
-            if booking:
-                return booking.to_dict(), 200
+            if booking and (booking.user_id == user_id or is_admin):
+                return {
+                    "id": booking.id,
+                    "people_count": booking.people_count,
+                    "confirmed": booking.confirmed,
+                    "destination": booking.destination.to_dict(),
+                    "user": {
+                        "id": booking.user.id,
+                        "name": booking.user.name,
+                        "email": booking.user.email
+                    }
+                }, 200
             return {"error": "Booking not found"}, 404
+
+        confirmed_param = request.args.get("confirmed")
+
+        if is_admin:
+            query = Booking.query
         else:
-            
-            
-            confirmed_param = request.args.get("confirmed")
+            query = Booking.query.filter_by(user_id=user_id)
 
-            bookings = Booking.query.all()
+        if confirmed_param == "true":
+            query = query.filter_by(confirmed=True)
+        elif confirmed_param == "false":
+            query = query.filter_by(confirmed=False)
 
-            if confirmed_param == "true":
-                bookings = Booking.query.filter_by(confirmed=True)
-            elif confirmed_param == "false":
-                bookings = Booking.query.filter_by(confirmed=False)
+        bookings = query.all()
+        results = []
 
-            #bookings = query
-            destinations = [b.destination.to_dict() for b in bookings]
-            return destinations, 200
+        for b in bookings:
+            results.append({
+                "id": b.id,
+                "people_count": b.people_count,
+                "confirmed": b.confirmed,
+                "destination": b.destination.to_dict(),
+                "user": {
+                    "id": b.user.id,
+                    "username": b.user.username,
+                    "email": b.user.email
+                }
+            })
+
+        return results, 200
 
         
     def post(self):
-        data=request.get_json()
+        data = request.get_json()
         user_id = session.get('user_id')
         if not user_id:
             return {"error": "Unauthorized access. Please log in."}, 401
-               
+
         try:
-            booking=Booking(
-                user_id=data['user_id'],
+            booking = Booking(
+                user_id=user_id,
                 destination_id=data['destination_id'],
-                people_count=data['people_count'],
-                confirmed=data['confirmed']
+                people_count=data.get('people_count', 1),
+                confirmed=False
             )
             db.session.add(booking)
             db.session.commit()
-            
-            return make_response(booking.to_dict(),201)
+            return booking.to_dict(), 201
         except IntegrityError:
-
             return {'error': '422 Unprocessable Entity'}, 422
+
             
     def patch(self,id):
         data=request.get_json()
         user_id = session.get('user_id')
         if not user_id:
             return {"error": "Unauthorized access. Please log in."}, 401
-        booking=Booking.query.get(id)
+        
+        booking = Booking.query.filter_by(id=id, user_id=user_id).first()
+
         if not booking:
             return {'error': 'Booking not found'}, 404
         for attr in data:
@@ -193,15 +222,26 @@ class Bookings(Resource):
         
         return make_response(booking.to_dict(),200)
     
-    def delete(self,id):
-        booking=Booking.query.get(id)
+    def delete(self, id):
         user_id = session.get('user_id')
         if not user_id:
             return {"error": "Unauthorized access. Please log in."}, 401
+        
+        booking = Booking.query.filter_by(id=id, user_id=user_id).first()
         if not booking:
             return {'error': 'Booking not found'}, 404
+        
+        if booking.user_id != user_id:
+            return {'error': 'Forbidden: You can only delete your own bookings'}, 403
+        
         db.session.delete(booking)
-        db.session.commit()   
+        db.session.commit()
+        print(f"Attempting to delete booking ID {id} for user ID {user_id}")
+
+
+        return {}, 204  # indicate success with no content
+    
+
         
 class Messages(Resource):
     def get(self):
