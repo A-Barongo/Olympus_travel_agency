@@ -57,7 +57,7 @@ function EditDestinationForm(){
     };
   
     const handleUpdate = (e) => {
-      //e.preventDefault();
+      e.preventDefault();
       const updatedData = {
         ...formData,
         price: Number(formData.price),
