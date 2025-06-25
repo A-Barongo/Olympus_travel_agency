@@ -43,7 +43,7 @@ class Login(Resource):
 
         if user:
             if user.authenticate(password):
-                session['is_admin'] = user.is_admin
+                session['admin'] = user.admin
                 session['user_id'] = user.id
                 return user.to_dict(), 200
 
@@ -133,7 +133,7 @@ class DestinationByID(Resource):
 class Bookings(Resource):
     def get(self, id=None):
         user_id = session.get('user_id')
-        is_admin = session.get('is_admin')  # ← Add this logic
+        is_admin = session.get('admin')  # ← Add this logic
 
         if not user_id and not is_admin:
             return {"error": "Unauthorized access. Please log in."}, 401
@@ -148,25 +148,29 @@ class Bookings(Resource):
                     "destination": booking.destination.to_dict(),
                     "user": {
                         "id": booking.user.id,
-                        "name": booking.user.name,
+                        "username": booking.user.username,
                         "email": booking.user.email
                     }
                 }, 200
             return {"error": "Booking not found"}, 404
 
         confirmed_param = request.args.get("confirmed")
+        
+        query = Booking.query
 
-        if is_admin:
-            query = Booking.query
-        else:
-            query = Booking.query.filter_by(user_id=user_id)
+        # Filter by user if not admin
+        if not is_admin:
+            query = query.filter_by(user_id=user_id)
 
+        # Filter by confirmed status if provided
         if confirmed_param == "true":
             query = query.filter_by(confirmed=True)
         elif confirmed_param == "false":
             query = query.filter_by(confirmed=False)
 
         bookings = query.all()
+
+        #bookings = Booking.query.all()
         results = []
 
         for b in bookings:
@@ -181,6 +185,8 @@ class Bookings(Resource):
                     "email": b.user.email
                 }
             })
+            
+        #session["results"] = results 
 
         return results, 200
 
@@ -263,12 +269,12 @@ class Messages(Resource):
         
         except IntegrityError:
             return {'error': '422 Unprocessable Entity'}, 422
-class Logout(Resource):
-
-    def delete(self):
-
-        session['user_id'] = None
         
+
+class Logout(Resource):
+    def delete(self):
+        session['user_id'] = None
+        session["results"] = None
         return {}, 204
            
 api.add_resource(Signup, "/signup")

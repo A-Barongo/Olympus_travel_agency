@@ -119,33 +119,6 @@ function Bookings() {
 
                     <form className="mt-4 space-y-2">
                       <input
-                        type="text"
-                        placeholder="Name"
-                        value={form.name || ""}
-                        onChange={(e) =>
-                          handleFormChange(booking.id, "name", e.target.value)
-                        }
-                        className="w-full border px-3 py-2 rounded"
-                      />
-                      <input
-                        type="email"
-                        placeholder="Email"
-                        value={form.email || ""}
-                        onChange={(e) =>
-                          handleFormChange(booking.id, "email", e.target.value)
-                        }
-                        className="w-full border px-3 py-2 rounded"
-                      />
-                      <input
-                        type="tel"
-                        placeholder="Phone Number"
-                        value={form.phone || ""}
-                        onChange={(e) =>
-                          handleFormChange(booking.id, "phone", e.target.value)
-                        }
-                        className="w-full border px-3 py-2 rounded"
-                      />
-                      <input
                         type="number"
                         min="1"
                         placeholder="Number of People"

@@ -20,7 +20,7 @@ function UserInfo() {
 
   const handleLogout = async () => {
     await fetch("http://localhost:5001/logout", {
-      method: "POST",
+      method: "DELETE",
       credentials: "include",
     });
     localStorage.removeItem("user");
