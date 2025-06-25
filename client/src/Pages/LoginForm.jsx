@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Components/NavBar';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -19,13 +20,12 @@ const LoginForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-          // ✅ Fix: Wrap with 'user' key
           localStorage.setItem('user', JSON.stringify({ user: data }));
-          alert('Login successful!');
+          toast.success("Login Successful")
           navigate('/my-bookings');
         }
          else {
-          alert(data.error || 'Login failed');
+          toast.error("Login failed")
         }
     } catch (error) {
       console.error('Error during login:', error);

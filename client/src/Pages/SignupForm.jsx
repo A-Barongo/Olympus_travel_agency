@@ -3,6 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Components/NavBar';
+import { toast } from 'react-toastify';
+
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -18,12 +20,13 @@ const SignupForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Signup successful!');
+        toast.success('Signup successful!');
         resetForm();
-        navigate('/login'); // optional: redirect after signup
+        navigate('/login'); 
 
       } else {
-        alert(data.error || 'Signup failed');
+        //alert(data.error || 'Signup failed');
+        toast.error("Signup Failed")
       }
     } catch (error) {
       console.error('Error during signup:', error);

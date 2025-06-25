@@ -1,6 +1,7 @@
 // Components/UserInfo.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function UserInfo() {
   const [user, setUser] = useState(null);
@@ -26,6 +27,7 @@ function UserInfo() {
     localStorage.removeItem("user");
     setUser(null);
     navigate("/login");
+    toast.success("Logged out successfully!");
   };
 
   if (!user) return null;
