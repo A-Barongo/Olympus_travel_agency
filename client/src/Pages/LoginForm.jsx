@@ -19,13 +19,14 @@ const LoginForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Save user data to localStorage
-        localStorage.setItem('user', JSON.stringify(data.user));
-        alert('Login successful!');
-        navigate('/my-bookings'); // Redirect to home or dashboard
-      } else {
-        alert(data.error || 'Login failed');
-      }
+          // ✅ Fix: Wrap with 'user' key
+          localStorage.setItem('user', JSON.stringify({ user: data }));
+          alert('Login successful!');
+          navigate('/my-bookings');
+        }
+         else {
+          alert(data.error || 'Login failed');
+        }
     } catch (error) {
       console.error('Error during login:', error);
       alert('An unexpected error occurred');
