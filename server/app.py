@@ -155,7 +155,7 @@ class Bookings(Resource):
             return {"error": "Booking not found"}, 404
 
         confirmed_param = request.args.get("confirmed")
-        
+
         query = Booking.query
 
         # Filter by user if not admin
