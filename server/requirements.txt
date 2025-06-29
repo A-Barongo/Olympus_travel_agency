@@ -1,8 +1,10 @@
-Flask
-Flask-Cors
-Flask-SQLAlchemy
-Flask-Migrate
-Flask-Bcrypt
-Flask-RESTful
+Flask==2.3.3
+Flask-Cors==4.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.5
+Flask-Bcrypt==1.0.1
+Flask-RESTful==0.3.10
+gunicorn==21.2.0
+sqlalchemy-serializer==1.4.1
+Faker==25.2.0
 gunicorn
-sqlalchemy_serializer
