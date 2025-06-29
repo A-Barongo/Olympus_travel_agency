@@ -5,3 +5,4 @@ Flask-Migrate
 Flask-Bcrypt
 Flask-RESTful
 gunicorn
+sqlalchemy_serializer
