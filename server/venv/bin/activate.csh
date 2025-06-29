@@ -9,7 +9,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV /home/emmanuel-gitau/Moringa/code/Phase-4/Olympus_travel_agency/server/venv
+setenv VIRTUAL_ENV '/home/ashton/Desktop/travel_agency 1/Olympus_travel_agency/server/venv'
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/"bin":$PATH"

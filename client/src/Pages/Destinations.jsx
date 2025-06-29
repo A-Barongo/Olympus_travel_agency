@@ -42,7 +42,7 @@ function Destinations() {
       toast.success("Destination booked successfully!");
     })
     .catch((err) => {
-      toast.error("Booking failed");
+      toast.error("Please log in");
       console.error(err);
     });
 };

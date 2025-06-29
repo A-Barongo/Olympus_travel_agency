@@ -1,4 +1,6 @@
-#!/home/emmanuel-gitau/Moringa/code/Phase-4/Olympus_travel_agency/server/venv/bin/python
+#!/bin/sh
+'''exec' "/home/ashton/Desktop/travel_agency 1/Olympus_travel_agency/server/venv/bin/python3" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys
