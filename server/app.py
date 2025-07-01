@@ -133,7 +133,7 @@ class DestinationByID(Resource):
 class Bookings(Resource):
     def get(self, id=None):
         user_id = session.get('user_id')
-        is_admin = session.get('admin')  # ← Add this logic
+        is_admin = session.get('admin')  
 
         if not user_id and not is_admin:
             return {"error": "Unauthorized access. Please log in."}, 401
