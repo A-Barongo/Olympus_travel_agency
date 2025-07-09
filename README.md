@@ -160,23 +160,6 @@ FLASK_ENV=development
 
 ---
 
-## 🧪 Testing
-
-Basic unit tests should be implemented for both frontend and backend.
-
-### Backend Tests (Pytest or Unittest)
-```bash
-cd server
-pytest
-```
-
-### Frontend Tests (Jest or Vitest)
-```bash
-cd client
-npm run test
-```
-
----
 
 ## 🐛 Troubleshooting & Known Issues
 
@@ -221,5 +204,5 @@ Created by A-Barongo, Emmanuel Gitau and Paul Ashton
 ## 📬 Contact
 
 Feel free to open an issue or contribute via a pull request.  
-For questions, email [your-email@example.com]  
+For questions, email [allanbarongo5@gmail.com ]  
 Happy coding! 🚀
